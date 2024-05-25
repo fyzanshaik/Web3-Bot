@@ -1,30 +1,177 @@
-# React + TypeScript + Vite
+# CoinTap Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CoinTap is a web application that allows users to earn virtual coins by tapping a button. The application integrates with a backend to fetch and save user scores. This documentation will guide you through the setup, usage, and components of the CoinTap app.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Prerequisites
 
-## Expanding the ESLint configuration
+- Node.js (v12 or higher)
+- npm (v6 or higher)
+- Git
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Setup
 
-- Configure the top-level `parserOptions` property like this:
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/your-username/cointap.git
+   cd cointap
+   ```
 
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
+2. **Install Dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Environment Variables**
+   Create a `.env` file in the root directory and add the following:
+   ```env
+   REACT_APP_BACKEND_URL=https://your-backend-url.com
+   ```
+
+4. **Start the Application**
+   ```bash
+   npm start
+   ```
+
+The application should now be running at `http://localhost:5173`.
+
+## Usage
+
+1. **Access the Application**
+   Open your browser and navigate to `http://localhost:3000`.
+
+2. **Tapping to Earn Coins**
+   - Tap the coin button to earn coins.
+   - The current score is updated with each tap.
+   - The wallet balance is fetched from the backend every 10 seconds.
+
+3. **User Feedback**
+   - Alerts are shown if you tap too fast or exceed the tap limit.
+
+## Components
+
+### CoinTap.tsx
+
+The main component of the application that handles user interactions and displays the current score.
+
+**Props:**
+- `username`: The username of the current user.
+- `initialScore`: The initial score fetched from the backend.
+- `currentScore`: The current score after tapping.
+
+### WalletBalance
+
+A component that displays the user's wallet balance.
+
+**Props:**
+- `balance`: The current balance of the user's wallet.
+
+### useFetchUserData
+
+A custom hook to fetch user data from the backend.
+
+**Usage:**
+```typescript
+const { score, setScore } = useFetchUserData(username);
+```
+
+### useSaveScore
+
+A custom hook to save the user's score to the backend at regular intervals.
+
+**Usage:**
+```typescript
+useSaveScore(initialScore, currentScore, username);
+```
+
+### useTapHandler
+
+A custom hook to handle tap events and update the score.
+
+**Usage:**
+```typescript
+const { score, handleTap } = useTapHandler(currentScore, 5000, 100);
+```
+
+## API Integration
+
+### Fetch User Data
+
+**Endpoint:**
+```http
+GET /api/user?username={username}
+```
+
+**Response:**
+```json
+{
+  "username": "fyzanshaik",
+  "score": 100
 }
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+### Save User Score
+
+**Endpoint:**
+```http
+POST /api/user
+```
+
+**Request Body:**
+```json
+{
+  "username": "fyzanshaik",
+  "score": 150
+}
+```
+
+**Response:**
+```json
+{
+  "success": true
+}
+```
+
+## Deployment
+
+### Deploying Frontend
+
+1. **Build the Application**
+   ```bash
+   npm run build
+   ```
+
+2. **Deploy to Vercel**
+   ```bash
+   npm install -g vercel
+   vercel
+   ```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Application not starting**
+   - Ensure all dependencies are installed.
+   - Check the `.env` file for correct environment variables.
+
+2. **API requests failing**
+   - Ensure the backend is running and accessible.
+   - Verify the `REACT_APP_BACKEND_URL` in the `.env` file.
+
+3. **CORS Issues**
+   - Ensure CORS is properly configured on the backend.
+
+## Contribution
+
+We welcome contributions! Please follow the steps below to contribute:
+
+1. Fork the repository.
+2. Create a new branch: `git checkout -b feature/your-feature-name`.
+3. Make your changes and commit them: `git commit -m 'Add some feature'`.
+4. Push to the branch: `git push origin feature/your-feature-name`.
+5. Open a pull request.
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
